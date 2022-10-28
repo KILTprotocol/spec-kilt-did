@@ -9,6 +9,7 @@
 
 ### Version History
 
+- **v1.3 - Sep.08 2022**: Clarify the DID Document returned for light DIDs that have been migrated
 - **v1.2 - Mar.22 2022**: Add recently added support for web3 names
 - **v1.1 - Jan.10 2022**: Switch light DID details encoding to use base58
 - **v1.0 - Nov.12 2021**: Support new KILT DID specification for light and full DIDs
@@ -178,10 +179,19 @@ Specifically for resolution metadata, every DID resolution result contains docum
 
 <table>
 <tr>
-<td> DID status </td> <td> Metadata structure </td>
+<td> DID status </td> <td> Document structure </td> <td> Metadata structure </td>
 </tr>
 <tr>
 <td> Deleted DID </td>
+<td>
+
+```json
+{
+    "id": "did:kilt:<did_identifier>"
+}
+```
+
+</td>
 <td>
 
 ```json
@@ -193,7 +203,16 @@ Specifically for resolution metadata, every DID resolution result contains docum
 </td>
 </tr>
 <tr>
-<td> Migrated light DID with the full DID not deactivated </td>
+<td> Migrated light DID with the full DID <b>not</b> deactivated </td>
+<td>
+
+```json
+{
+    "id": "did:kilt:<did_identifier>"
+}
+```
+
+</td>
 <td>
 
 ```json
@@ -207,6 +226,18 @@ Specifically for resolution metadata, every DID resolution result contains docum
 </tr>
 <tr>
 <td> Un-migrated light DID or a full DID </td>
+<td>
+
+```json
+{
+    "id": "did:kilt:<did_identifier>",
+    "authentication": ...
+    "keyAgreement": ...
+    ...
+}
+```
+
+</td>
 <td>
 
 ```json
