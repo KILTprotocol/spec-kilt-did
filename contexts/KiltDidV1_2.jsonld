@@ -1,0 +1,10 @@
+{
+  "@context": [
+    "https://w3id.org/security/v2",
+    {
+      "@protected": true,
+      "KiltPublishedCredentialCollectionV1": "https://github.com/KILTprotocol/spec-KiltPublishedCredentialCollectionV1",
+      "Sr25519VerificationKey2020": "https://github.com/KILTprotocol/spec-kilt-did#sr25519"
+    }
+  ]
+}
