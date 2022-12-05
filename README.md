@@ -263,17 +263,39 @@ An instance of `DidEndpoint` contains the service details, i.e., service ID, a s
 
 > The validity and authenticity of the information stored on the KILT blockchain are guaranteed by the same blockchain, which verifies that all DID management operations other than creation are signed by the DID authentication key, as described in the section relative to each operation.
 
-#### Representation of Public Key Types on the DID Document
+#### Representation of Verification Material on the DID Document
 
-Currently the use of four different types of public keys as [Verification Methods](https://w3c.github.io/did-core/#verification-methods) are supported by a full DID; light DIDs support a subset of these (see [Light DIDs](#light-dids) section for details).
-A key's type is indicated in form of an enum for both full DIDs and light DIDs.
-By reference implementations of a DID resolver compliant with the specification, keys are represented as follows on the DID document.
+KILT DIDs allow associating certain public key material as [Verification Methods](https://w3c.github.io/did-core/#verification-methods).
+Currently, the use of four different types of public keys is supported by a full DID; light DIDs support a subset of these (see [Light DIDs](#light-dids) section for details).
 
-Conforming with [DID specifications](https://w3c.github.io/did-core/#verification-methods) these Verification Methods are JSON objects containing the properties `id`, `type`, and `controller`.
-All Verification Methods on a DID Document returned from these resolvers have an additional property `publicKeyBase58` containing the public key material in base58 encoding using the bitcoin alphabet.  
-In all cases, the `controller` of a key is the resolved DID.
+For both light- and full DIDs, information related to a public key (key type, id, and value) is stored in a size-optimized encoding.
+During resolution, this information must be translated to conform to DID specifications for [Verification Methods](https://w3c.github.io/did-core/#verification-methods) and [Verification Material](https://www.w3.org/TR/did-core/#verification-material).
+This section describes the recommended representation of public key material to be used in the resolution of KILT DIDs.
+These recommendations are realized in [reference implementations](#reference-implementations) and _SHOULD_ be followed by further implementations where possible.
 
-The value of the `type` property varies according to the key type:
+##### Recommended Representations
+
+The recommended data model for Verification Methods is a map comprised of four properties:
+
+- `id`: Identifier of the Verification Method, composed of the resolved DID and a locally unique string.
+- `type`: Verification Method type, depending on the key type as described below.
+- `controller`: The resolved DID.
+- `publicKeyBase58`: The public key in base58 encoding using the bitcoin alphabet.
+
+While the first three are required by the [DID specifications](https://w3c.github.io/did-core/#verification-methods), the latter provides the [Verification Material](https://www.w3.org/TR/did-core/#verification-material) in base58 encoding as registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#publickeybase58).
+
+An example of this data model may look as follows:
+
+```json
+{
+  "id": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu#0xad991c68c9f1c6c4f869fa19a217db30aff0f74963ca7e26206f7102b229df5b",
+  "controller": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu",
+  "type": "Sr25519VerificationKey2020",
+  "publicKeyBase58": "E5GZWZHj8yNffQK7nQVZcScYNKZ1SezJRX53YDYxzyQ3"
+}
+```
+
+Recommendations for the value of the `type` property are as follows, according to the key type:
 
 ##### `ed25519`
 
@@ -292,17 +314,6 @@ Keys are represented as an `X25519KeyAgreementKey2019` type Verification Method 
 Keys to be used with the [`sr25519` signature scheme using Schnorr signature on Ristretto compressed Ed25519 points](https://wiki.polkadot.network/docs/learn-keys#what-is-sr25519-and-where-did-it-come-from) are represented as a `Sr25519VerificationKey2020` type Verification Method.
 Because of the signature scheme's recency, this type is pending formal definition as part of a cryptographic suite but has seen production implementation as part of [other DID method implementations](https://github.com/docknetwork/dock-did-driver/blob/85b619aeb39165599eda02076790150cefe8f613/Dock%20DID%20method%20specification.md).
 The data model and intended use is analogous to the [`Ed25519VerificationKey2018`](https://www.w3.org/TR/did-spec-registries/#ed25519verificationkey2018) Verification Method type.
-
-An instance of this Verification Method may look as follows:
-
-```json
-{
-  "id": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu#0xad991c68c9f1c6c4f869fa19a217db30aff0f74963ca7e26206f7102b229df5b",
-  "controller": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu",
-  "type": "Sr25519VerificationKey2020",
-  "publicKeyBase58": "E5GZWZHj8yNffQK7nQVZcScYNKZ1SezJRX53YDYxzyQ3"
-}
-```
 
 ### Update a light DID
 
