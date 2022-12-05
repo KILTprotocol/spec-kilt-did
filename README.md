@@ -266,7 +266,7 @@ An instance of `DidEndpoint` contains the service details, i.e., service ID, a s
 #### Representation of Public Key Types on the DID Document
 
 Currently the use of four different types of public keys as [Verification Methods](https://w3c.github.io/did-core/#verification-methods) are supported by a full DID; light DIDs support a subset of these (see [Light DIDs](#light-dids) section for details).
-Keys type is indicated in form of an enum for both full DIDs and light DIDs.
+A key's type is indicated in form of an enum for both full DIDs and light DIDs.
 By reference implementations of a DID resolver compliant with the specification, keys are represented as follows on the DID document.
 
 Conforming with [DID specifications](https://w3c.github.io/did-core/#verification-methods) these Verification Methods are JSON objects containing the properties `id`, `type`, and `controller`.
@@ -277,15 +277,15 @@ The value of the `type` property varies according to the key type:
 
 ##### `ed25519`
 
-Keys are represented as a `Ed25519VerificationKey2018` type Verification Method as defined by the [Ed25519 Signature 2018](https://w3c-ccg.github.io/lds-ed25519-2018/) cryptographic suite and registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#ed25519verificationkey2018).
+Keys are represented as an `Ed25519VerificationKey2018` type Verification Method as defined by the [Ed25519 Signature 2018](https://w3c-ccg.github.io/lds-ed25519-2018/) cryptographic suite and registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#ed25519verificationkey2018).
 
 ##### `ecdsa-secp256k1`
 
-Keys are represented as a `EcdsaSecp256k1VerificationKey2019` type Verification Method as defined by the [Ecdsa Secp256k1 Signature 2019](https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/) cryptographic suite and registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#ecdsasecp256k1verificationkey2019).
+Keys are represented as an `EcdsaSecp256k1VerificationKey2019` type Verification Method as defined by the [Ecdsa Secp256k1 Signature 2019](https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/) cryptographic suite and registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#ecdsasecp256k1verificationkey2019).
 
 ##### `x25519`
 
-Keys are represented as a `X25519KeyAgreementKey2019` type Verification Method as registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#x25519keyagreementkey2019).
+Keys are represented as an `X25519KeyAgreementKey2019` type Verification Method as registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#x25519keyagreementkey2019).
 
 ##### `sr25519`
 
