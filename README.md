@@ -9,6 +9,7 @@
 
 ### Version History
 
+- **v1.4 - June.03 2025**: Recommend using Multikey Verification Methods
 - **v1.3 - Sep.08 2022**: Clarify the DID Document returned for light DIDs that have been migrated
 - **v1.2 - Mar.22 2022**: Add recently added support for web3 names
 - **v1.1 - Jan.10 2022**: Switch light DID details encoding to use base58
@@ -275,45 +276,47 @@ These recommendations are realized in [reference implementations](#reference-imp
 
 ##### Recommended Representations
 
-The recommended data model for Verification Methods is a map comprised of four properties:
+The recommended data model for Verification Methods is the [Multikey][multikey-spec] data model.
+This data model comprises at least the following properties:
 
 - `id`: Identifier of the Verification Method, composed of the resolved DID and a locally unique string.
-- `type`: Verification Method type, depending on the key type as described below.
+- `type`: Verification Method type; must be the string "Multikey".
 - `controller`: The resolved DID.
-- `publicKeyBase58`: The public key in base58 encoding using the bitcoin alphabet.
-
-While the first three are required by the [DID specifications](https://w3c.github.io/did-core/#verification-methods), the latter provides the [Verification Material](https://www.w3.org/TR/did-core/#verification-material) in base58 encoding as registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#publickeybase58).
+- `publicKeyMultibase`: The public key bytes plus key type prefix in [Multibase][multibase-repo] encoding (base-58-btc).
 
 An example of this data model may look as follows:
 
 ```json
 {
   "id": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu#0xad991c68c9f1c6c4f869fa19a217db30aff0f74963ca7e26206f7102b229df5b",
-  "controller": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu",
+  "type": "Multikey",
   "type": "Sr25519VerificationKey2020",
-  "publicKeyBase58": "E5GZWZHj8yNffQK7nQVZcScYNKZ1SezJRX53YDYxzyQ3"
+  "controller": "did:kilt:4sJm5Zsvdi32hU88xbL3v6VQ877P4HLaWVYUXgcSyQR8URTu",
+  "publicKeyMultibase": "z6MkmM42vxfqZQsv4ehtTjFFxQ4sQKS2w6WR7emozFAn5cxu"
 }
 ```
 
-Recommendations for the value of the `type` property are as follows, according to the key type:
+The prefixed public key bytes are composed as follows for the four known public key types, with prefixes defined by the [multicodecs table][multicodecs-table]:
 
 ##### `ed25519`
 
-Keys are represented as an `Ed25519VerificationKey2018` type Verification Method as defined by the [Ed25519 Signature 2018](https://w3c-ccg.github.io/lds-ed25519-2018/) cryptographic suite and registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#ed25519verificationkey2018).
+Public keys to be used with the `ed25519` signing algorithm are composed of the two-byte prefix `0xed01` (the varint expression of `0xed`), followed by the 32-byte public key data.
+The resulting bytes are then Multibase-encoded.
 
 ##### `ecdsa-secp256k1`
 
-Keys are represented as an `EcdsaSecp256k1VerificationKey2019` type Verification Method as defined by the [Ecdsa Secp256k1 Signature 2019](https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/) cryptographic suite and registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#ecdsasecp256k1verificationkey2019).
-
-##### `x25519`
-
-Keys are represented as an `X25519KeyAgreementKey2019` type Verification Method as registered to the [DID Specification Registries](https://www.w3.org/TR/did-spec-registries/#x25519keyagreementkey2019).
+Public keys to be used with the `ecdsa-secp256k1` signing algorithm are composed of the two-byte prefix `0xe701` (the varint expression of `0xe7`), followed by the 33-byte compressed public key data.
+The resulting bytes are then Multibase-encoded.
 
 ##### `sr25519`
 
-Keys to be used with the [`sr25519` signature scheme using Schnorr signature on Ristretto compressed Ed25519 points](https://wiki.polkadot.network/docs/learn-keys#what-is-sr25519-and-where-did-it-come-from) are represented as a `Sr25519VerificationKey2020` type Verification Method.
-Because of the signature scheme's recency, this type is pending formal definition as part of a cryptographic suite but has seen production implementation as part of [other DID method implementations](https://github.com/docknetwork/dock-did-driver/blob/85b619aeb39165599eda02076790150cefe8f613/Dock%20DID%20method%20specification.md).
-The data model and intended use is analogous to the [`Ed25519VerificationKey2018`](https://www.w3.org/TR/did-spec-registries/#ed25519verificationkey2018) Verification Method type.
+Public keys to be used with the [`sr25519` signature scheme using Schnorr signature on Ristretto compressed Ed25519 points][about-sr25519] are are composed of the two-byte prefix `0xef01` (the varint expression of `0xef`), followed by the 32-byte public key data.
+The resulting bytes are then Multibase-encoded.
+
+##### `x25519`
+
+Public keys to be used with the `x25519` key agreement algorithm are composed of the two-byte prefix `0xec01` (the varint expression of `0xec`), followed by the 32-byte public key data.
+The resulting bytes are then Multibase-encoded.
 
 ### Update a light DID
 
@@ -439,3 +442,6 @@ The SDK provides a default resolver implementation that follows this specificati
 [dif-universal-resolver]: https://dev.uniresolver.io/
 [scale-encoding]: https://docs.substrate.io/v3/advanced/scale-codec/
 [multibase-repo]: https://github.com/multiformats/multibase#multibase-table
+[multicodecs-table]: https://github.com/multiformats/multicodec/blob/3bc7f4c20afe28e10d9d539e2a565578de6dd71c/table.csv
+[multikey-spec]: https://www.w3.org/TR/cid-1.0/#Multikey
+[about-sr25519]: https://wiki.polkadot.network/learn/learn-cryptography/#what-is-sr25519-and-where-did-it-come-from
