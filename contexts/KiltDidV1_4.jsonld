@@ -1,0 +1,9 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/cid/v1",
+    {
+      "@protected": true,
+      "KiltPublishedCredentialCollectionV1": "https://github.com/KILTprotocol/spec-KiltPublishedCredentialCollectionV1"
+    }
+  ]
+}
